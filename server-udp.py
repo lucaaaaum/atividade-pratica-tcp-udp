@@ -6,3 +6,4 @@ s.bind(("0.0.0.0", 5001))
 while True:
     data, addr = s.recvfrom(1024)
     print(addr, data.decode())
+    s.sendto(b"CHATBOT 5000", addr)
