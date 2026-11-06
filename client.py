@@ -43,7 +43,15 @@ def receber(tcp):
     os._exit(0)
 
 host, tcp_port = escolher_servidor()
-tcp = socket.create_connection((host, tcp_port))
+try:
+    tcp = socket.create_connection((host, tcp_port), timeout=5)
+    tcp.settimeout(None)
+except ConnectionRefusedError:
+    print(f"O servidor {host}:{tcp_port} recusou a conexão. O servidor TCP está rodando?")
+    sys.exit(1)
+except OSError as e:
+    print(f"Não foi possível conectar a {host}:{tcp_port}: {e}")
+    sys.exit(1)
 print("Local:", tcp.getsockname(), "-> Servidor:", tcp.getpeername())
 threading.Thread(target=receber, args=(tcp,), daemon=True).start()
 
